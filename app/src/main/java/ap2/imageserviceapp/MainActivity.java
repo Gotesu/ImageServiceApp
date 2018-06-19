@@ -14,12 +14,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void startService(View view) {
-        Toast.makeText(this,"You just Pushed the Start button",Toast.LENGTH_SHORT).show();
+    public void startService(View view){
+        Intent intent = new Intent(this, ImageServiceAppService.class);
+        startService(intent);
+    }
+    public void stopService(View view){
+        Intent intent = new Intent(this, ImageServiceAppService.class);
+        stopService(intent);
     }
 
-    public void stopService(View view) {
-        Toast.makeText(this,"You just Pushed the Stop button",Toast.LENGTH_SHORT).show();
-    }
 
 }
