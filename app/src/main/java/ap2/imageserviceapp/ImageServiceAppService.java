@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 public class ImageServiceAppService extends Service{
     private BroadcastReceiver yourReceiver;
+    private PictureSender picSender;
 
     @Nullable
     @Override
@@ -25,7 +26,7 @@ public class ImageServiceAppService extends Service{
     public void onCreate() {
         super.onCreate();
         // Here put the Code of Service
-
+        picSender = new PictureSender(this);
         final IntentFilter theFilter = new IntentFilter();
         theFilter.addAction("android.net.wifi.supplicant.CONNECTION_CHANGE");
         theFilter.addAction("android.net.wifi.STATE_CHANGE");
@@ -48,7 +49,9 @@ public class ImageServiceAppService extends Service{
     }
 
     private void startTransfer() {
-        Toast.makeText(this,"Here I should have started the transfer", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"Here I should have started the transfer", Toast.LENGTH_SHORT).show();
+        picSender.getPictures();
+        picSender.sendPictures();
     }
 
 
