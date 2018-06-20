@@ -5,4 +5,5 @@ import java.io.File;
 interface ITCPCommunicator {
     void connect();
     void send(File img);
+    void disconnect();
 }
