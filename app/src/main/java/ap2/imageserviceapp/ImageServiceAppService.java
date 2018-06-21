@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
@@ -50,8 +51,10 @@ public class ImageServiceAppService extends Service{
 
     private void startTransfer() {
         //Toast.makeText(this,"Here I should have started the transfer", Toast.LENGTH_SHORT).show();
-        picSender.getPictures();
-        picSender.sendPictures();
+        //picSender.getPictures();
+        //picSender.sendPictures();
+        Runnable r = new ClientThread(picSender,this);
+        new Thread(r).start();
     }
 
 

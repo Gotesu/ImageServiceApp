@@ -12,6 +12,7 @@ import android.widget.Toast;
 import java.io.File;
 
 import static android.support.v4.content.ContextCompat.getSystemService;
+import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 
 public class PictureSender {
@@ -23,7 +24,7 @@ public class PictureSender {
     public PictureSender(Context con){
         pics = null;
         cont = con;
-        communicator = new dummy(con);
+        communicator = new TCPCommunicator();
     }
 
     public void getPictures() {
@@ -37,15 +38,15 @@ public class PictureSender {
         int number = pics.length;
         int i = 1;
         final int id = 1;
-        String channelId = "some_channel_id";
-        CharSequence channelName = "Some Channel";
+        String channelId = "ImageServiceApp_Channel";
+        CharSequence channelName = "Image Service App Channel";
         int importance = NotificationManager.IMPORTANCE_LOW;
         NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
         notificationChannel.enableLights(true);
         notificationChannel.setLightColor(Color.RED);
         notificationChannel.enableVibration(true);
         notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(cont, "some_channel_id");
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(cont, "ImageServiceApp_Channel");
         NotificationManager NM = (NotificationManager)cont.getSystemService(Context.NOTIFICATION_SERVICE);
         NM.createNotificationChannel(notificationChannel);
         builder.setContentTitle("Picture Transfer").setContentText("Transfer in progress").setPriority(NotificationCompat.PRIORITY_LOW).setSmallIcon(R.drawable.ic_launcher_background);
@@ -53,14 +54,29 @@ public class PictureSender {
         if(NM != null) {
             NM.notify(id, builder.build());
         }
+        try {
+            communicator.connect();
+        } catch (Exception e) {
+            Toast.makeText(cont,"this is so sad, connection didnt succeed",Toast.LENGTH_LONG).show();
+        }
         for (File pic : pics) {
             communicator.send(pic);
             builder.setProgress(number, i, false);
             NM.notify(id, builder.build());
             i++;
+            try {
+                currentThread().sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         builder.setContentText("Download complete").setProgress(0, 0, false);
         NM.notify(id, builder.build());
+        try {
+            communicator.disconnect();
+        } catch (Exception e) {
+            Toast.makeText(cont,"this is so sad, connection didnt succeed",Toast.LENGTH_LONG).show();
+        }
     }
 
 
