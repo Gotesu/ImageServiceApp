@@ -1,17 +1,20 @@
 package ap2.imageserviceapp;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import org.json.JSONObject;
 import java.nio.file.Files;
 import java.util.Base64;
 
-public class TCPCommunicator {
+public class TCPCommunicator implements ITCPCommunicator{
     private Socket socket;
+
 
     public void connect() {
         try {
-            this.socket = new Socket("127.0.0.1", 9900);
+            InetAddress serverAddr = InetAddress.getByName("10.0.2.2");
+            this.socket = new Socket(serverAddr, 9900);
         } catch (Exception e) {
             e.printStackTrace();
         }
