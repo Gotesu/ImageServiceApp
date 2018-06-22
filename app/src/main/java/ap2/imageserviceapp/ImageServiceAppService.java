@@ -23,11 +23,15 @@ public class ImageServiceAppService extends Service{
         return null;
     }
 
+    /**
+     * onCreate method, init of wifi checking, everytime wifi is on we tranfer pictures
+     */
     @Override
     public void onCreate() {
         super.onCreate();
-        // Here put the Code of Service
         picSender = new PictureSender(this);
+        //the following code was taken from exercise 13, it has some deprecation from api 28 on but
+        //i preferred using the code we were given formally in the exercise
         final IntentFilter theFilter = new IntentFilter();
         theFilter.addAction("android.net.wifi.supplicant.CONNECTION_CHANGE");
         theFilter.addAction("android.net.wifi.STATE_CHANGE");
@@ -49,21 +53,33 @@ public class ImageServiceAppService extends Service{
         this.registerReceiver(this.yourReceiver, theFilter);
     }
 
+    /**
+     * sending pictures
+     */
     private void startTransfer() {
-        //Toast.makeText(this,"Here I should have started the transfer", Toast.LENGTH_SHORT).show();
-        //picSender.getPictures();
-        //picSender.sendPictures();
+        //sending pictures using a different thread
         Runnable r = new ClientThread(picSender,this);
         new Thread(r).start();
     }
 
-
+    /**
+     * on start command of the function
+     * @param intent intent
+     * @param flag flag
+     * @param startId start id
+     * @return start sticky
+     */
     public int onStartCommand(Intent intent, int flag, int startId) {
+        //making the message
         Toast.makeText(this,"Service starting...", Toast.LENGTH_SHORT).show();
         return START_STICKY;
     }
 
+    /**
+     * on destroy
+     */
     public void onDestroy() {
+        //making the message
         Toast.makeText(this,"Service ending...", Toast.LENGTH_SHORT).show();
     }
 
